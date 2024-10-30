@@ -9,99 +9,96 @@
             background-color: black;
             color: red;
             font-family: Arial, sans-serif;
-        }
-        h1, h2 {
             text-align: center;
         }
-        .content {
+        h1 {
+            font-size: 48px;
+            margin-top: 50px;
+        }
+        #content {
+            margin: 20px;
             padding: 20px;
-            text-align: center;
+            border: 2px solid red;
+            display: inline-block;
+            width: 80%;
         }
-        .admin-button {
-            display: block;
-            margin: 20px auto;
+        #admin-panel {
+            display: none;
+            margin-top: 20px;
+            border: 2px solid red;
+            padding: 20px;
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+        input[type="password"], input[type="file"] {
+            padding: 10px;
+            margin-top: 10px;
+        }
+        button {
             padding: 10px 20px;
-            color: white;
             background-color: red;
+            color: white;
             border: none;
             cursor: pointer;
+            margin-top: 10px;
         }
-        .hidden {
-            display: none;
-        }
-        .file-list {
-            margin-top: 20px;
+        button:hover {
+            background-color: darkred;
         }
     </style>
-    <script>
-        let files = [];
+</head>
+<body>
+    <h1>محتوى DARK 77</h1>
+    <div id="content">
+        <p id="pageContent">هنا المحتوى الخاص بك يظهر للجميع. يمكنك تعديل هذا المحتوى من خلال لوحة الإدارة.</p>
+        <div id="admin-panel">
+            <h3>تعديل المحتوى</h3>
+            <textarea id="newContent" rows="4" cols="50" placeholder="أدخل المحتوى الجديد هنا..."></textarea><br>
+            <input type="file" id="fileInput" /><br>
+            <button onclick="addFile()">إضافة ملف</button><br>
+            <button onclick="updateContent()">تحديث المحتوى</button>
+        </div>
+    </div>
+    <div>
+        <input type="password" id="password" placeholder="أدخل كلمة المرور" />
+        <button onclick="showAdminPanel()">دخول الإدارة</button>
+    </div>
 
-        function showAdminForm() {
-            const password = prompt("يرجى إدخال كلمة المرور:");
-            if (password === "كلمة_المرور") { // استبدل "كلمة_المرور" بكلمة المرور الحقيقية
-                document.getElementById("adminContent").classList.remove("hidden");
+    <script>
+        const correctPassword = 'alzyod77';
+        const contentArea = document.getElementById('pageContent');
+        const adminPanel = document.getElementById('admin-panel');
+
+        function showAdminPanel() {
+            const passwordInput = document.getElementById('password').value;
+            if (passwordInput === correctPassword) {
+                adminPanel.style.display = 'block';
+                document.getElementById('password').value = ''; // مسح خانة كلمة المرور
             } else {
-                alert("كلمة المرور غير صحيحة!");
+                alert('كلمة المرور غير صحيحة!');
             }
         }
 
         function updateContent() {
-            const newContent = document.getElementById("newContent").value;
-            document.getElementById("dynamicContent").innerHTML = newContent;
-            document.getElementById("newContent").value = ""; // مسح محتوى textarea بعد التحديث
+            const newContent = document.getElementById('newContent').value;
+            contentArea.innerHTML = newContent; // تحديث المحتوى
+            adminPanel.style.display = 'none'; // إخفاء لوحة الإدارة بعد التحديث
         }
 
         function addFile() {
-            const fileInput = document.getElementById("fileInput");
+            const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
             if (file) {
-                const url = URL.createObjectURL(file);
-                files.push({ name: file.name, url });
-                updateFileList();
-                fileInput.value = ""; // مسح اختيار الملف بعد الإضافة
+                const fileLink = document.createElement('a');
+                fileLink.href = URL.createObjectURL(file);
+                fileLink.download = file.name;
+                fileLink.innerText = `تحميل ${file.name}`;
+                contentArea.appendChild(fileLink);
+                contentArea.appendChild(document.createElement('br'));
+                fileInput.value = ''; // إعادة تعيين الإدخال
+            } else {
+                alert('يرجى اختيار ملف!');
             }
         }
-
-        function updateFileList() {
-            const fileListDiv = document.getElementById("fileList");
-            fileListDiv.innerHTML = ""; // مسح القائمة الحالية
-            files.forEach(file => {
-                const link = document.createElement("a");
-                link.href = file.url;
-                link.download = file.name;
-                link.textContent = file.name;
-                fileListDiv.appendChild(link);
-                fileListDiv.appendChild(document.createElement("br"));
-            });
-        }
     </script>
-</head>
-<body>
-
-    <h1>مرحبا بك في DARK 77</h1>
-    
-    <div class="content">
-        <h2>المحتوى</h2>
-        <div id="dynamicContent">
-            محتوى الصفحة الافتراضي هنا.
-        </div>
-
-        <h2>تحميل الملفات</h2>
-        <input type="file" id="fileInput">
-        <button class="admin-button" onclick="addFile()">إضافة ملف</button>
-
-        <div class="file-list" id="fileList">
-            <!-- قائمة الملفات المضافة ستظهر هنا -->
-        </div>
-
-        <button class="admin-button" onclick="showAdminForm()">إدارة المحتوى</button>
-
-        <div id="adminContent" class="hidden">
-            <h2>تعديل المحتوى</h2>
-            <textarea id="newContent" rows="4" cols="50" placeholder="أدخل المحتوى الجديد هنا..."></textarea><br>
-            <button class="admin-button" onclick="updateContent()">تحديث المحتوى</button>
-        </div>
-    </div>
-
 </body>
 </html>
